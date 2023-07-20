@@ -1,46 +1,34 @@
-let dragindex = 0;
-let dropindex = 0;
-let clone = "";
- 
-const images = document.querySelectorAll(".image");
- 
-function drag(e) {
-  e.dataTransfer.setData("text", e.target.id);
+let c= document.getElementsByClassName('image')
+for(let i=0;i<c.length;i++){
+    c[i].addEventListener('dragstart',(event)=>{
+       event.dataTransfer.setData('text',event.target.id)
+    })
+    c[i].addEventListener('dragover',(event)=>{
+        event.preventDefault()
+    })
+    c[i].addEventListener('drop',(event)=>{
+        let g = event.target.id
+        let t= event.dataTransfer.getData('text')
+        let dragref=document.getElementById(t)
+        let dropref=document.getElementById(g)
+        let d= document.getElementById('parent')
+        let dc=d.childNodes
+        let dragindex=0;
+        console.log(dragref)
+        for(let j=0;j<dc.length;j++){
+            if(dc[j].id==t){
+                dragindex=j
+                break
+            }
+        }
+        console.log(dragindex)
+        let temp2=event.target.cloneNode(true)
+        temp2.draggable='true'
+        temp2.droppable='true'
+        console.log(temp2)
+        d.replaceChild(dragref,dropref)
+        d.replaceChild(temp2,document.getElementById('parent').childNodes[dragindex])
+})
 }
- 
-function allowDrop(e) {
-  e.preventDefault();
-}
- 
-function drop(e) {
-  clone = e.target.cloneNode(true);
-  let data = e.dataTransfer.getData("text");
-  let nodelist = document.getElementById("parent").childNodes;
-  console.log(data, e.target.id);
-  for (let i = 0; i < nodelist.length; i++) {
-    if (nodelist[i].id == data) {
-      dragindex = i;
-    }
-  }
- 
-  dragdrop(clone);
- 
-  document
-    .getElementById("parent")
-    .replaceChild(document.getElementById(data), e.target);
- 
-  document
-    .getElementById("parent")
-    .insertBefore(
-      clone,
-      document.getElementById("parent").childNodes[dragindex]
-    );
-}
- 
-const dragdrop = (image) => {
-  image.ondragstart = drag;
-  image.ondragover = allowDrop;
-  image.ondrop = drop;
-};
  
 images.forEach(dragdrop);
